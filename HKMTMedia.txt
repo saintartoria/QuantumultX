@@ -1,20 +1,5 @@
 # HKMTMedia.list
 # > Bilibili
-host-keyword,bilibili,HKMTMedia
-host-suffix,acg.tv,HKMTMedia
-host-suffix,acgvideo.com,HKMTMedia
-host-suffix,b23.tv,HKMTMedia
-host-suffix,biliapi.com,HKMTMedia
-host-suffix,biliapi.net,HKMTMedia
-host-suffix,bilibili.com,HKMTMedia
-host-suffix,bilibili.tv,HKMTMedia
-host-suffix,biligame.com,HKMTMedia
-host-suffix,biligame.net,HKMTMedia
-host-suffix,bilivideo.com,HKMTMedia
-host-suffix,hdslb.com,HKMTMedia
-host-suffix,im9.com,HKMTMedia
-host, upos-hz-mirrorakam.akamaized.net,HKMTMedia
-user-agent, *bili*,HKMTMedia
 DOMAIN-SUFFIX,bilibili.com,HKMTMedia
 DOMAIN,upos-hz-mirrorakam.akamaized.net,HKMTMedia
 DOMAIN-SUFFIX,acgvideo.com,HKMTMedia
