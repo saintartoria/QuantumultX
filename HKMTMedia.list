@@ -4,10 +4,10 @@ HOST-KEYWORD,bilibili, HKMTMedia
 HOST-SUFFIX,acg.tv, HKMTMedia
 HOST-SUFFIX,acgvideo.com, HKMTMedia
 HOST-SUFFIX,b23.tv, HKMTMedia
-HOST-SUFFIX,biliapi.com, DIRECT
-HOST-SUFFIX,biliapi.net, DIRECT
-HOST-SUFFIX,bilibili.tv, DIRECT
-HOST-SUFFIX,hdslb.com, DIRECT
+HOST-SUFFIX,biliapi.com, HKMTMedia
+HOST-SUFFIX,biliapi.net, HKMTMedia
+HOST-SUFFIX,bilibili.tv, HKMTMedia
+HOST-SUFFIX,hdslb.com, DIRHKMTMediaECT
 HOST-SUFFIX,bilibili.com, HKMTMedia
 HOST-SUFFIX,biligame.com,H KMTMedia
 HOST-SUFFIX,biligame.net, HKMTMedia
