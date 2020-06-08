@@ -4,14 +4,14 @@ DOMAIN-KEYWORD,bilibili, HKMTMedia
 DOMAIN-SUFFIX,acg.tv, HKMTMedia
 DOMAIN-SUFFIX,acgvideo.com, HKMTMedia
 DOMAIN-SUFFIX,b23.tv, HKMTMedia
-DOMAIN-SUFFIX,biliapi.com, HKMTMedia
-DOMAIN-SUFFIX,biliapi.net, HKMTMedia
+DOMAIN-SUFFIX,biliapi.com, DIRECT
+DOMAIN-SUFFIX,biliapi.net, DIRECT
+DOMAIN-SUFFIX,bilibili.tv, DIRECT
+DOMAIN-SUFFIX,hdslb.com, DIRECT
 DOMAIN-SUFFIX,bilibili.com, HKMTMedia
-DOMAIN-SUFFIX,bilibili.tv, HKMTMedia
 DOMAIN-SUFFIX,biligame.com,H KMTMedia
 DOMAIN-SUFFIX,biligame.net, HKMTMedia
 DOMAIN-SUFFIX,bilivideo.com, HKMTMedia
-DOMAIN-SUFFIX,hdslb.com, HKMTMedia
 DOMAIN-SUFFIX,im9.com, HKMTMedia
 DOMAIN, upos-hz-mirrorakam.akamaized.net, HKMTMedia
 USER-AGENT, *bili*, HKMTMedia
