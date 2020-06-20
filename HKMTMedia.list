@@ -1,27 +1,27 @@
 # HKMTMedia.list
 # > Bilibili
-HOST-KEYWORD,bilibili, HKMTMedia
-HOST-SUFFIX,acg.tv, HKMTMedia
-HOST-SUFFIX,acgvideo.com, HKMTMedia
-HOST-SUFFIX,b23.tv, HKMTMedia
-HOST-SUFFIX,biliapi.com, HKMTMedia
-HOST-SUFFIX,biliapi.net, HKMTMedia
-HOST-SUFFIX,bilibili.tv, HKMTMedia
-HOST-SUFFIX,hdslb.com, HKMTMedia
-HOST-SUFFIX,bilibili.com, HKMTMedia
-HOST-SUFFIX,biligame.com, HKMTMedia
-HOST-SUFFIX,biligame.net, HKMTMedia
-HOST-SUFFIX,bilivideo.com, HKMTMedia
+HOST-KEYWORD,bilibili,HKMTMedia
+HOST-SUFFIX,acg.tv,HKMTMedia
+HOST-SUFFIX,acgvideo.com,HKMTMedia
+HOST-SUFFIX,b23.tv,HKMTMedia
+HOST-SUFFIX,biliapi.com,HKMTMedia
+HOST-SUFFIX,biliapi.net,HKMTMedia
+HOST-SUFFIX,bilibili.tv,HKMTMedia
+HOST-SUFFIX,hdslb.com,HKMTMedia
+HOST-SUFFIX,bilibili.com,HKMTMedia
+HOST-SUFFIX,biligame.com,HKMTMedia
+HOST-SUFFIX,biligame.net,HKMTMedia
+HOST-SUFFIX,bilivideo.com,HKMTMedia
 HOST-SUFFIX,im9.com, HKMTMedia
-HOST, upos-hz-mirrorakam.akamaized.net, HKMTMedia
-USER-AGENT, *bili*, HKMTMedia
-IP-CIDR,119.29.29.29/32, HKMTMedia
-IP-CIDR,203.107.1.34/32, HKMTMedia
-IP-CIDR,203.107.1.65/32, HKMTMedia
-IP-CIDR,203.107.1.66/32, HKMTMedia
-IP-CIDR,150.116.92.250/32, HKMTMedia
+HOST, upos-hz-mirrorakam.akamaized.net,HKMTMedia
+USER-AGENT, *bili*,HKMTMedia
+IP-CIDR,119.29.29.29/32,HKMTMedia
+IP-CIDR,203.107.1.34/32,HKMTMedia
+IP-CIDR,203.107.1.65/32,HKMTMedia
+IP-CIDR,203.107.1.66/32,HKMTMedia
+IP-CIDR,150.116.92.250/32,HKMTMedia
 # > IQIYI
-host-keyword,qiyi, HKMTMedia
+host-keyword,qiyi,HKMTMedia
 host-suffix,71.am.com,HKMTMedia
 host-suffix,qy.net,HKMTMedia
 ip-cidr,101.224.0.0/13,HKMTMedia
