@@ -13,9 +13,9 @@
 ---------------------
 Surge 4.0
 [Script]
-腾讯新闻 = type=cron,cronexp=0 8 0 * * *,script-path=https://raw.githubusercontent.com/Sunert/Scripts/master/Task/txnews.js,script-update-interval=0
+腾讯新闻 = type=cron,cronexp=0 8 0 * * *,script-path=https://raw.githubusercontent.com/saintartoria/QuantumultX/master/Scripts/txnews3.js,script-update-interval=0
 
-腾讯新闻 = type=http-request,pattern=https:\/\/api\.inews\.qq\.com\/event\/v1\/user\/event\/report\?,script-path=https://raw.githubusercontent.com/Sunert/Scripts/master/Task/txnews.js
+腾讯新闻 = type=http-request,pattern=https:\/\/api\.inews\.qq\.com\/event\/v1\/user\/event\/report\?,script-path=https://raw.githubusercontent.com/saintartoria/QuantumultX/master/Scripts/txnews3.js
 
 ~~~~~~~~~~~~~~~~~~~~~
 Loon 2.1.0+
@@ -46,8 +46,8 @@ const notifyInterval = 4; //视频红包间隔通知开为1，常关为0
 const logs = 0; // 日志开关，0为关，1为开
 const cookieName = '腾讯新闻'
 const sy = init()
-const signurlVal = sy.getdata('sy_signurl_txnews')
-const cookieVal = sy.getdata( 'sy_cookie_txnews')
+const signurlVal = sy.getdata('sy_signurl_txnews3')
+const cookieVal = sy.getdata( 'sy_cookie_txnews3')
 
 let isGetCookie = typeof $request !== 'undefined'
 if (isGetCookie) {
@@ -62,8 +62,8 @@ if ($request && $request.method != 'OPTIONS' && $request.url.match(/user\/event\
   const cookieVal = $request.headers['Cookie'];
   sy.log(`signurlVal:${signurlVal}`)
   sy.log(`cookieVal:${cookieVal}`)
-  if (signurlVal) sy.setdata(signurlVal, 'sy_signurl_txnews')
-  if (cookieVal) sy.setdata(cookieVal,  'sy_cookie_txnews')
+  if (signurlVal) sy.setdata(signurlVal, 'sy_signurl_txnews3')
+  if (cookieVal) sy.setdata(cookieVal,  'sy_cookie_txnews3')
   sy.msg(cookieName, `获取Cookie: 成功🎉`, ``)
   }
  }
@@ -389,4 +389,3 @@ function init() {
     }
     return { isSurge, isQuanX, msg, log, getdata, setdata, get, post, done }
   }
-
