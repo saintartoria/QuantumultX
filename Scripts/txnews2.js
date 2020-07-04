@@ -79,7 +79,7 @@ async function all()
 { 
   await getsign();
   await toRead();
-  await Tasklist();
+  //await Tasklist();
   await lookVideo();
   await openApp();
   await StepsTotal();
