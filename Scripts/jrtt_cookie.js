@@ -8,6 +8,7 @@
 #今日头条签到获取ck loon
 http-request https:\/\/i-lq\.snssdk\.com script-path=jrtt_cookie.js, requires-body=true, timeout=30, tag=今日头条激素CK
 
+今日头条 = type=http-request,pattern=https:\/\/i-lq\.snssdk\.com,script-path=https://raw.githubusercontent.com/saintartoria/QuantumultX/master/Scripts/jrtt_cookie.js, requires-body=true
 ====================================
 
 MITM=i-lq.snssdk.com
