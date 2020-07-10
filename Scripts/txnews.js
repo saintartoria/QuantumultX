@@ -1,54 +1,51 @@
 /*
-更新时间: 2020-07-03 00:05
 腾讯新闻签到修改版，可以自动阅读文章获取红包，该活动为瓜分百万阅读红包挑战赛，针对幸运用户参与
 获取Cookie方法:
-1.把以下配置复制到响应配置下
+1. 把以下地址复制到响应配置下，非Quantumult X 1.0.8+ 版，请删除tag标签;
 2.打开腾讯新闻app，阅读几篇文章，倒计时结束后即可获取阅读Cookie;
-3.脚本运行一次阅读一篇文章，请不要连续运行，防止封号，可设置每几分钟运行一次
-4.可能腾讯有某些限制，有些号码无法领取红包，手动阅读几篇，能领取红包，一般情况下都是正常的，
-5.此脚本根据阅读篇数开启通知，默认20篇，此版本和另一版本相同
-6.版本更新日志:
-1.01 获取金币专用，阅读和视频次数有间隔，自己设定运行时间，大概5-8分钟一次，增加获取视频地址，看一圈视频即可获取，修改重写为请求body‼️
-
+3.获取红包ID的Cookie方法，点击红包倒计时，或者点击活动页面的专属红包任务，有些账号可能无，或者打开链接，可能激活阅读红包，链接地址:https://news.qq.com/FERD/cjRedDown.htm
+4.现阶段每日共9个阶梯红包，具体情况视腾讯而变动
+5.脚本运行一次阅读一篇文章，请不要连续运行，防止封号，可设置每几分钟运行一次，至少每2分钟一次
+6.可能腾讯有某些限制，有些号码无法领取红包，手动阅读几篇，能领取红包，一般情况下都是正常的
+7.此版本会频繁阅读通知，可关闭通知，或者使用本仓库 txnews2.js
 ---------------------
 Surge 4.0
 [Script]
 腾讯新闻 = type=cron,cronexp=0 8 0 * * *,script-path=https://raw.githubusercontent.com/Sunert/Scripts/master/Task/txnews.js,script-update-interval=0
-
-腾讯新闻 = type=http-request,pattern=https:\/\/api\.inews\.qq\.com\/event\/v1\/user\/event\/report\?,script-path=txnews.js, requires-body=true
-
+腾讯新闻 = type=http-request,pattern=https:\/\/api\.inews\.qq\.com\/event\/v1\/user\/event\/report\?,script-path=https://raw.githubusercontent.com/Sunert/Scripts/master/Task/txnews.js
+腾讯新闻 = type=http-request,pattern=^https:\/\/api\.inews\.qq\.com\/activity\/v1\/redpack\/user\/list\?activity_id,script-path=https://raw.githubusercontent.com/Sunert/Scripts/master/Task/txnews.js
 ~~~~~~~~~~~~~~~~~~~~~
 Loon 2.1.0+
 [Script]
 # 本地脚本
 cron "04 00 * * *" script-path=https://raw.githubusercontent.com/Sunert/Scripts/master/Task/txnews.js, enabled=true, tag=腾讯新闻
-
-http-request https:\/\/api\.inews\.qq\.com\/event\/v1\/user\/event\/report\? script-path=txnews.js, requires-body=true
-
+http-request https:\/\/api\.inews\.qq\.com\/event\/v1\/user\/event\/report\? script-path=https://raw.githubusercontent.com/Sunert/Scripts/master/Task/txnews.js
+http-request ^https:\/\/api\.inews\.qq\.com\/activity\/v1\/redpack\/user\/list\?activity_id script-path=https://raw.githubusercontent.com/Sunert/Scripts/master/Task/txnews.js
 -----------------
-
 QX 1.0.7+ :
  [task_local]
 0 9 * * * txnews.js, tag=腾讯新闻
  [rewrite_local]
-https:\/\/api\.inews\.qq\.com\/event\/v1\/user\/event\/report\? url script-request-body txnews.js
-
+https:\/\/api\.inews\.qq\.com\/event\/v1\/user\/event\/report\? url script-request-header txnews.js
+# 获取红包ID
+^https:\/\/api\.inews\.qq\.com\/activity\/v1\/redpack\/user\/list\?activity_id url script-request-header txnews.js
 ~~~~~~~~~~~~~~~~~~
  [MITM]
 hostname = api.inews.qq.com
-
 ---------------------------
-
 Cookie获取后，请注释掉Cookie地址。
-
+#腾讯新闻app签到，根据红鲤鱼与绿鲤鱼与驴修改
 */
-const notifyInterval = 3 //视频红包间隔通知开为1，常关为0
-const logs = 0; // 日志开关，0为关，1为开
+const notify = 1; //开启通知为1，关闭为0
+const logs = 1; // 日志开关
 const cookieName = '腾讯新闻'
+const signurlKey = 'sy_signurl_txnew8'
+const cookieKey = 'sy_cookie_txnew8'
+const RedIDKey = 'sy_rd_txnew8'
 const sy = init()
-const signurlVal = sy.getdata('sy_signurl_txnews')
-const cookieVal = sy.getdata( 'sy_cookie_txnews')
-const videoVal = sy.getdata( 'video_txnews')
+const signurlVal = sy.getdata(signurlKey)
+const cookieVal = sy.getdata(cookieKey)
+const RedID = sy.getdata(RedIDKey)
 
 let isGetCookie = typeof $request !== 'undefined'
 if (isGetCookie) {
@@ -58,37 +55,30 @@ if (isGetCookie) {
 }
 
 function GetCookie() {
-if ($request && $request.method != 'OPTIONS' && $request.url.match(/user\/event\/report\?/)&&$request.body.indexOf("article_read")!= -1) {
+if ($request && $request.method != 'OPTIONS' && $request.url.match(/user\/event\/report\?/)) {
   const signurlVal =  $request.url
   const cookieVal = $request.headers['Cookie'];
   sy.log(`signurlVal:${signurlVal}`)
   sy.log(`cookieVal:${cookieVal}`)
-  if (signurlVal) sy.setdata(signurlVal, 'sy_signurl_txnews')
-  if (cookieVal) sy.setdata(cookieVal,  'sy_cookie_txnews')
+  if (signurlVal) sy.setdata(signurlVal, signurlKey)
+  if (cookieVal) sy.setdata(cookieVal, cookieKey)
   sy.msg(cookieName, `获取Cookie: 成功🎉`, ``)
   }
-if ($request && $request.method != 'OPTIONS' && $request.url.match(/user\/event\/report\?/)&&$request.body.indexOf("video_read")!= -1) {
-  const videoVal =  $request.url
-  sy.log(`videoVal:${videoVal}`)
-  if (videoVal) sy.setdata(videoVal,  'video_txnews')
-  sy.msg(cookieName, `获取视频地址: 成功🎉`, ``)
-  }
 
+if ($request && $request.method != 'OPTIONS'&& $request.url.match(/redpack\/user\/list\?activity/)) {
+  const RedID =  $request.url.split("=")[1].split("&")[0]
+  if (RedID) sy.setdata(RedID, RedIDKey)
+  sy.msg(cookieName, `获取红包ID: 成功🎉`, ``)
+  }
  }
 async function all() 
 { 
   await getsign();
   await toRead();
-  //await Tasklist();
-  await lookVideo();
-  await openApp();
   await StepsTotal();
   await Redpack();
-  await videoPack();
   await getTotal();
-  await showmsg();
 }
-
 
 //签到
 function getsign() {
@@ -97,17 +87,17 @@ function getsign() {
     url: `https://api.inews.qq.com/task/v1/user/signin/add?`,headers:{Cookie: cookieVal}
   };
    sy.post(llUrl, (error, response, data) => {   
-      if(logs)sy.log(`${cookieName}签到 - data: ${data}`)
+     if(logs) sy.log(`${cookieName}签到 - data: ${data}`)
       const obj = JSON.parse(data)
       if (obj.info=="success"){
        next = obj.data.next_points
-       tip =  obj.data.share_tip
+       tip =  obj.data.tip_soup
        Dictum = tip.replace(/[\<|\.|\>|br]/g,"")+""+obj.data.author.replace(/[\<|\.|\>|br|图|腾讯网友]/g,"")
-       signinfo =  '【签到信息】连续签到' + obj.data.signin_days+'天 明日+'+ next +'金币 成功🎉\n'}
+       signresult = '  签到成功🎉'
+       signinfo =  '【签到信息】连续签到' + obj.data.signin_days+'天  '+'明日+'+ next +'金币'}
       else {
        sy.msg('签到失败，🉐登录腾讯新闻app获取cookie', "", "")
-       console.log('签到失败，🉐登录腾讯新闻app获取cookie'+data)
-       return
+        console.log('签到失败，🉐登录腾讯新闻app获取cookie'+data)
      }
   resolve()
     })
@@ -117,210 +107,90 @@ function getsign() {
 
 //阅读阶梯
 function toRead() {
-return new Promise((resolve, reject) => {
   const toreadUrl = {
     url: signurlVal, headers: {Cookie:cookieVal},
-    body: 'event=article_read'
+    body: 'event=article_read&extend={"article_id":"20200424A08KNH00","channel_id":"17240460"}'
   };
    sy.post(toreadUrl,(error, response, data) =>{
-     if(logs)sy.log(`${cookieName}阅读文章 - data: ${data}`)
-       toread = JSON.parse(data)
-  try {
-   if
-(toread.info=='success'&&toread.data.activity.id)   {
-     //RedID = toread.data.activity.id
-     readcoins = toread.data.countdown_timer.countdown_tips
-      }
-     }
-    catch(error) {
-       //sy.msg(cookieName, '无法获取活动ID',  error)
-      }
-    })
-resolve()
-   })
-  }
-function lookVideo() {
- return new Promise((resolve, reject) => {
-   const lookVideoUrl = {
-    url: videoVal, 
-    headers: {Cookie:cookieVal},
-    body: 'event=video_read'
-  };
-   sy.post(lookVideoUrl,(error, response, data) =>{
-    if (error){
-      sy.msg(cookieName, '观看视频:'+ error)
+      if (error){
+      sy.msg(cookieName, '阅读:'+ error)
         }else{
-        sy.log(`${cookieName}观看视频 - data: ${data}`)
-       tolookresult = JSON.parse(data)
-      if(tolookresult.info=='success'){
-       //RedID = tolookresult.data.activity.id
-        videocoins = tolookresult.data.countdown_timer.countdown_tips
-        }
-       }
-   resolve()
+       if(logs) sy.log(`${cookieName}阅读文章 - data: ${data}`)}
     })
-   })
- }
-
-function tasks() {
- return new Promise((resolve, reject) => {
- const tasklist = ['9w6zkk','kl5p8h','erq8vx','aqyd3z','jslzr5','l7glnd','o96j0h','mide1n','u8z8vk']
-for (i=0;i<tasklist.length;i++){
-   const taskUrl = {
-    url: `http://4ul.cn/${tasklist[i]}`, 
-    headers: {Cookie:cookieVal},
-   };
-setTimeout(function(){
-   sy.post(taskUrl,(error, response, data) =>{
-       taskresult = JSON.parse(data)
-      if(taskresult.info=='success'){
-         sy.log(`任务成功,总金币: ${taskresult.data.points}\n${data}`)
-        }
-      else {
-sy.log(`${cookieName}每日任务 - data: ${data}`)
-        }
-       })
-     },(i+1)*500)
-     resolve()
-   }
- })
-}
-
-function Tasklist() {
-return new Promise((resolve, reject) => {
-const token =  signurlVal.split('?')[1]
-  const shareUrl = {
-    url: `https://api.inews.qq.com/task/v1/usermergetask/list?${token}`,
-    headers: {Cookie: cookieVal},
   }
-   sy.get(shareUrl, (error, response, data) => {
-    if(logs)sy.log(`${cookieName}- data: ${data}`)
-     tasklist = JSON.parse(data)
-      if (tasklist.data.task_list!==null){
-        for (t=0;t<tasklist.data.task_list.length-1;t++){
-      if (tasklist.data.task_list[t].task_quota!=tasklist.data.task_list[t].task_rate)
-          tasks()
-         }
-        }
-      })
-    resolve()
-   })
-}
+
+
 //阅读文章统计
 function StepsTotal() {
-  //const ID =  signurlVal.match(/devid=[a-zA-Z0-9_-]+/g)
+  const ID =  signurlVal.match(/devid=[a-zA-Z0-9_-]+/g)
 return new Promise((resolve, reject) => {
   const StepsUrl = {
-    url: `https://api.inews.qq.com/activity/v1/activity/info/get?activity_id=readtask_welfare_lowactive&${ID}`,
-   headers: {Cookie: cookieVal},
+    url: `https://api.inews.qq.com/activity/v1/activity/info/get?activity_id=${RedID}&${ID}`,
+   headers: {
+      Cookie: cookieVal,
+    },
   };
     sy.get(StepsUrl, (error, response, data) => {
-     if(logs)sy.log(`${cookieName}统计- data: ${data}`)
-       totalred = JSON.parse(data)
-        if (totalred.ret == 0){
-     for (i=0;i<totalred.data.award.length;i++){
-   if(totalred.data.award[i].type=='article'){
-       readredtotal =totalred.data.award[i].total
-       readtitle =
-totalred.data.award[i].title.split("，")[0].replace(/[\u4e00-\u9fa5]/g,``)
-       getreadred=totalred.data.award[i].can_get
-       openreadred= totalred.data.award[i].opened
-       readnum = totalred.data.award[i].event_num
-        }
-   if(totalred.data.award[i].type=='video'){
-       videoredtotal = totalred.data.award[i].total
-       videotitle = totalred.data.award[i].title.split("，")[0].replace(/[\u4e00-\u9fa5]/g,``)
-       getreadred = totalred.data.award[i].can_get        
-       openvideored = totalred.data.award[i].opened
-       videonum = totalred.data.award[i].event_num/2
-        }
-      }
+        if(logs) sy.log(`${cookieName}阅读统计 - data: ${data}`)
+        article = JSON.parse(data)
+        if (article.ret == 0){
+        redpacktotal =  article.data.extends.redpack_total
+         redpackgot = article.data.extends.redpack_got
+           haveread = article.data.extends.article.have_read_num
+         getreadpack = article.data.extends.article.redpack_read_num
+      if (redpackgot < redpacktotal){
+     articletotal = '【红包领取】已领/共计 '+ redpackgot+'/'+redpacktotal +' 次\n【阅读文章】篇数/阶梯 '+ haveread+'/'+getreadpack+'篇\n'
      }
+      if (redpackgot == redpacktotal){
+       articletotal = `【红包领取】`+ redpackgot+' / '+redpacktotal +' ✅\n'+'【阅读文章】 '+ haveread+' / '+getreadpack+' ✅'}
+        str = articletotal +signinfo+ `\n【每日一句】`+ Dictum
+         }
+     else if (article.ret == 2011){
+        str += `\n【每日一句】`+ Dictum
+         }
+     else {
+     sy.log(cookieName + ` 返回值: ${article.ret}, 返回信息: ${article.info}`) 
+         }
     resolve()
     })
   })
 }
-
-
-function openApp() {
-   ID = signurlVal.match(/devid=[a-zA-Z0-9_-]+/g)
-return new Promise((resolve, reject) => {
-  const openUrl = {
-    url: `https://api.inews.qq.com/activity/v1/activity/redpack/get?isJailbreak=0&${ID}`,
-    headers: {Cookie: cookieVal},
-    body: `redpack_type=free_redpack&activity_id=readtask_welfare_lowactive`
-  }
-   sy.post(openUrl, (error, response, data) => {
-    if(logs)sy.log(`${cookieName}每日开启- data: ${data}`)
-      let opcash = JSON.parse(data)
-      if(opcash.data.award.num){
-       redpackres = `【每日开启】到账`+opcash.data.award.num/100+` 元 🌷\n` 
-        }
-      })
-    resolve()
-   })
-}
-
 //阶梯红包到账
 function Redpack() {
-   ID = signurlVal.match(/devid=[a-zA-Z0-9_-]+/g)
-return new Promise((resolve, reject) => {
-  const cashUrl = {
-    url: `https://api.inews.qq.com/activity/v1/activity/redpack/get?isJailbreak=0&${ID}`,
-    headers: {Cookie: cookieVal},
-    body: `redpack_type=article&activity_id=readtask_welfare_lowactive`
-  }
-   sy.post(cashUrl, (error, response, data) => {
-    if(logs)sy.log(`${cookieName}阅读红包- data: ${data}`)
-        let rcash = JSON.parse(data)
-       try{
-            readredpack =  Number()
-            redpackres =``
-        if (rcash.ret == 0){
-       for (i=0;i<rcash.data.award.length;i++){
-        readredpack += rcash.data.award[i].num/100
-            }
-      if(readredpack!=0){
-       redpackres += `【阅读红包】到账`+readredpack+` 元 🌷\n` 
-            }
-           }
-        }
-      catch (e){
-      sy.log(`阅读文章:`+e)
-     }
-      resolve()
-      })
-   })
-}
-function videoPack() {
   const ID =  signurlVal.match(/devid=[a-zA-Z0-9_-]+/g)
 return new Promise((resolve, reject) => {
- setTimeout(()=>{
   const cashUrl = {
     url: `https://api.inews.qq.com/activity/v1/activity/redpack/get?isJailbreak=0&${ID}`,
     headers: {Cookie: cookieVal},
-    body: `redpack_type=video&activity_id=readtask_welfare_lowactive`
+    body: `activity_id=${RedID}`
   };
     sy.post(cashUrl, (error, response, data) => {
-    if(logs)sy.log(`${cookieName}视频红包-data:${data}`)
-        let vcash = JSON.parse(data)
-            videoredpack= Number()
-            redpackres =``
-        if (vcash.ret == 0){
-       for (i=0;i<vcash.data.award.length;i++){
-        videoredpack += vcash.data.award[i].num/100
-             }
-       if (videoredpack!=0){
-        redpackres += `【视频红包】到账`+videoredpack+` 元 🌷\n` 
+        if(logs) sy.log(`${cookieName}阶梯红包提取 - data: ${data}`)
+        rcash = JSON.parse(data)
+        if (rcash.ret == 0){
+             redpack = `【阶梯红包】到账 +`+ rcash.data.redpack.amount/100 +`元 🌷`
             }
-         }
-       },100)
-      resolve()
+        else if (rcash.ret == 2013){
+            if (article.data.extends.redpack_got<article.data.extends.redpack_total){
+             redpack =  "【阶梯红包】"+redpackgot+' / '+redpacktotal+' 🔕\n' 
+               }
+          else { 
+             redpack = "【阶梯红包】"+redpackgot+' / '+redpacktotal+' ✅' 
+               }
+             }
+        else if (rcash.ret == 2016){
+            redpack = "【阶梯红包】"+rcash.info+' ❎\n'
+            }
+        else if (rcash.ret == 1003){
+            redpack = "【红包ID】 无❗️\n"
+            }
+        else {
+            redpack =  " "+rcash.info+`❌\n`
+             }
+        resolve()
       })
-   })
+  })
 }
-
-
 
 //收益总计
 function getTotal() {
@@ -330,37 +200,21 @@ return new Promise((resolve, reject) => {
     headers: {Cookie: cookieVal}};
     sy.post(totalUrl, function(error,response, data) {
     if (error) {
-      sy.msg("获取收益信息失败‼️", "", error)
+        sy.msg("获取收益信息失败‼️", "", error);
+     if (logs) console.log("获取收益信息" + data)
     } else {
-    if (logs) console.log("获取收益信息" +data)
      const obj = JSON.parse(data)
-      subTile = '【收益总计】'+obj.data.wealth[0].title +'金币  '+"现金: " +obj.data.wealth[1].title+'元'
-      }
+        notb = '【收益总计】'+obj.data.wealth[0].title +'金币  '+"现金: " +obj.data.wealth[1].title+'元'}
+   if (notify == true){
+       sy.msg(cookieName+signresult, notb, redpack+str)
+       sy.log(cookieName +","+notb+ "\n" +str)
+       }
     resolve()
     })
    })
  }
 
-function showmsg() {
- return new Promise((resolve, reject) => {
-   detail = signinfo+ ``+ `【文章阅读】已读/再读: `+ readnum +`/`+readtitle+` 篇\n`+`【阅读红包】已开/总计: `+openreadred+`/`+readredtotal+` 个🧧\n`+ `【观看视频】已看/再看: `+ videonum +`/`+videotitle+` 分钟\n`+`【视频红包】已开/总计: `+openvideored+`/`+videoredtotal+` 个🧧\n【每日一句】`+Dictum+`\n`
-  sy.log(subTile+`\n`+detail)
-  if (notifyInterval==1){
-   sy.msg(cookieName,subTile,detail)
-  }
-else if (openreadred==readredtotal&&openvideored!=videoredtotal){
-   sy.msg(cookieName+` 阅读任务已完成✅`,subTile,detail)
-  }
-else if (openreadred==readredtotal&&openvideored==videoredtotal){
-   sy.msg(cookieName+` 今日任务已完成✅`,subTile,detail)
-  }
-   else if
-(openreadred%notifyInterval==0&&readcoins=="红包+1"){
-   sy.msg(cookieName,subTile,detail)
-  }
- })
-resolve()
-}
+
 
 
 function init() {
@@ -406,4 +260,3 @@ function init() {
     }
     return { isSurge, isQuanX, msg, log, getdata, setdata, get, post, done }
   }
-
