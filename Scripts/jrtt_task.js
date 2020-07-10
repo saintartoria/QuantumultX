@@ -20,7 +20,7 @@ MITM=i-lq.snssdk.com
 #今日头条定时任务 loon
 
 cron "0 21,31,50 0-22 * * ?" script-path=jrtt_task.js, tag=今日头条激素版task
-
+今日头条 = type=cron,cronexp=35 0 21,31,50 0-22 * *,script-path=https://raw.githubusercontent.com/saintartoria/QuantumultX/master/Scripts/htt_task.js,script-update-interval=0
 */
 
 
